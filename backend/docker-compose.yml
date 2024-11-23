@@ -1,0 +1,55 @@
+version: '3.8'
+
+
+services: 
+  gold-api:
+    container_name: gold-api
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "6001:3002"  
+    environment:
+      - API_TYPE=gold  
+    restart: 'on-failure'
+    volumes:
+      - ./index.js:/app/index.js
+
+  currency-api: 
+    container_name: currency-api
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "6002:3002"
+    environment:
+      - API_TYPE=currency
+    restart: 'on-failure'
+    volumes:
+      - ./index.js:/app/index.js
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: 'on-failure'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    ports:
+      - 8080:8080
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: always
+    ports:
+      - "9100:9100"
+    command:
+      - '--path.rootfs=/host'
+    volumes:
+      - ./:/host:ro,rslave
