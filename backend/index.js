@@ -166,9 +166,11 @@ app.get('/metrics', async (req, res) => {
 // ? to be done
 // *** End Health check ***
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Export thêm 1 hàm clear
+
+
+
+module.exports = app;
 
 app.use(cors({
   origin: 'http://localhost:3000'
